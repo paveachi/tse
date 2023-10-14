@@ -1,5 +1,5 @@
 # CS50 TSE
-## Student name (GitHub username)
+## Student name: Paul Chirkov (GitHub username: paulchir)
 
 The assignment and Specs are in a [public repo](https://github.com/CS50Fall2023/labs/tse).
 Do not clone that repo; view it on GitHub.
