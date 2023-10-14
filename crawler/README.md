@@ -22,4 +22,4 @@ Code, Error:
 
 # Testing
 
-Tested with valgrind to ensure there are no memory leaks. The bash script Testing.sh tests a variety of cases where parameters are invalid. It also tests the crawler on letters, toscrape and dictionary to depths 0 and 1. The crawler passes all of these tests. 
+Tested with valgrind to ensure there are no memory leaks (make valgrind runs valgrind on all test cases in testing.sh). The bash script Testing.sh tests a variety of cases where parameters are invalid. It also tests the crawler on letters, toscrape and dictionary to depths 0 and 1. The crawler passes all of these tests. 

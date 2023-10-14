@@ -17,24 +17,32 @@
 #directory doesn't exist
 ./crawler http://cs50tse.cs.dartmouth.edu/tse/letters/ ../data/fakedirectory 2
 
-
+echo ""
+echo "Letters to depth 0" 
 # Testing letters website to depths 0, 1
 mkdir ../data/letters-0
 ./crawler http://cs50tse.cs.dartmouth.edu/tse/letters/ ../data/letters-0 0
 
+echo "Letters to depth 1" 
 mkdir ../data/letters-1
 ./crawler http://cs50tse.cs.dartmouth.edu/tse/letters/ ../data/letters-1 1
 
 # Testing wikipedia website to depths 0,1
+echo ""
+echo "Wikipedia to depth 0" 
 mkdir ../data/wikipedia-0
 ./crawler http://cs50tse.cs.dartmouth.edu/tse/wikipedia/ ../data/wikipedia-0 0
 
+echo "Wikipedia to depth 1" 
 mkdir ../data/wikipedia-1
 ./crawler http://cs50tse.cs.dartmouth.edu/tse/wikipedia/ ../data/wikipedia-1 1
 
 # Testing toscrape to depths 0,1
+echo ""
+echo "toscrape to depth 0" 
 mkdir ../data/toscrape-0
 ./crawler http://cs50tse.cs.dartmouth.edu/tse/toscrape/ ../data/toscrape-0 0
 
+echo "toscrape to depth 1" 
 mkdir ../data/toscrape-1
 ./crawler http://cs50tse.cs.dartmouth.edu/tse/toscrape/ ../data/toscrape-1 1
