@@ -29,6 +29,6 @@ bool pagedir_init(const char* pageDirectory);
  * Caller provides:
  *   valid web page, valid directory, ID number of webpage.
  * We guarantee:
- * webpage is saved or nothing happens if there is an error.
+ *  webpage is saved or nothing happens if there is an error.
  */
 void pagedir_save(const webpage_t* page, const char* pageDirectory, const int docID);
