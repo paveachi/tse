@@ -75,7 +75,7 @@ static void parseArgs(const int argc, char* argv[],char** seedURL, char** pageDi
     // check that the number is in valid range
     if(!(num >= 0 && num <=10)){
         fprintf(stderr, "Max depth must be in the range [0,10].\n");
-        exit(4);
+        exit(5);
     }
     
     *maxDepth = num;    
@@ -110,11 +110,13 @@ static void crawl(char* seedURL, char* pageDirectory, const int maxDepth){
         //pull a webpage from the bag 
         //fetch the HTML for that webpage and if fetch was successful
         if(webpage_fetch(current)){
+            printf("%d %9s: %s\n", webpage_getDepth(current), "Fetched", webpage_getURL(current));
             //save the webpage to pageDirectory
             pagedir_save(current, pageDirectory, docID++);
             //if the webpage is not at maxDepth,
             if(webpage_getDepth(current) < maxDepth){
                 //pageScan that HTML
+                printf("%d %9s: %s\n", webpage_getDepth(current), "Scanning", webpage_getURL(current));
                 pageScan(current, bag, hashtable);
             }
         }
@@ -150,14 +152,18 @@ static void pageScan(webpage_t* page, bag_t* pagesToCrawl, hashtable_t* pagesSee
             if(hashtable_insert(pagesSeen, normalizedResult, "")){
                 //create a webpage_t for it.
                 webpage_t* newPage = webpage_new(normalizedResult, webpage_getDepth(page) + 1, NULL);
+                printf("%d %9s: %s\n", webpage_getDepth(page), "Found", webpage_getURL(newPage));
                 //insert the webpage into the bag
                 bag_insert(pagesToCrawl, newPage);
+                printf("%d %9s: %s\n", webpage_getDepth(page), "Added", webpage_getURL(newPage));
             }
             else{
+                printf("%d %9s: %s\n", webpage_getDepth(page), "IgnDupl", normalizedResult);
                 free(normalizedResult); // free URL if it fails to be inserted into hashtable
             } 
         }
         else{
+            printf("%d %9s: %s\n", webpage_getDepth(page), "IgnExtrn", normalizedResult);
             free(normalizedResult); // free if it's not internal.
         }
     }
