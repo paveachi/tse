@@ -8,7 +8,6 @@ OBJS = crawler.o
 LIBS = 
 LLIBS = $(L1)/libcs50-given.a $(L2)/common.a 
 
-
 CFLAGS = -Wall -pedantic -std=c11 -ggdb $(TESTING) -I$(L1) -I$(L2)
 CC = gcc
 MAKE = make
@@ -26,9 +25,8 @@ crawler.o: $(L1)/webpage.h $(L2)/pagedir.h $(L1)/hashtable.h $(L1)/bag.h
 test: testing.sh
 	./testing.sh 
 
-# expects a file `test.names` to exist; it can contain any text.
-#valgrind: bagtest test.names
-#	$(VALGRIND) ./testing.sh
+valgrind: testing.sh
+	$(VALGRIND) ./testing.sh
 
 clean:
 	rm -rf *.dSYM  # MacOS debugger info

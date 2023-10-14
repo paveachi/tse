@@ -8,6 +8,7 @@
 ./crawler http://cs50tse.cs.dartmouth.edu/tse/letters/ ../data/letters 15 23
 #Depth too high 
 ./crawler http://cs50tse.cs.dartmouth.edu/tse/letters/ ../data/letters 15
+#depth not a number
 ./crawler http://cs50tse.cs.dartmouth.edu/tse/letters/ ../data/letters depthargument
 #website not internal
 ./crawler https://github.com/CS50Fall2023 ../data/letters 0
