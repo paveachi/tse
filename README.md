@@ -1,9 +1,4 @@
 # CS50 TSE
 ## Student name: Paul Chirkov (GitHub username: paulchir)
 
-The assignment and Specs are in a [public repo](https://github.com/CS50Fall2023/labs/tse).
-Do not clone that repo; view it on GitHub.
-Watch there for any commits that may represent updates to the assignment or specs.
-
-Add here any assumptions you made while writing the crawler, any ways in which your implementation differs from the three Specs, or any ways in which you know your implementation fails to work.
-
+My crawler implementation does not make any assumptions beyond those outlined in the specs (see crawler/README.md for for detail).
