@@ -16,7 +16,7 @@ VALGRIND = valgrind --leak-check=full --show-leak-kinds=all
 
 crawler: $(OBJS) $(LLIBS)
 	$(CC) $(CFLAGS) $^ $(LLIBS) $(LIBS) -o $@
-#crawler.o dependsd on h files
+#crawler.o depends on h files
 crawler.o: $(L1)/webpage.h $(L2)/pagedir.h $(L1)/hashtable.h $(L1)/bag.h  
 
 .PHONY: test valgrind clean
