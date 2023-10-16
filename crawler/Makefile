@@ -21,7 +21,7 @@ crawler.o: $(L1)/webpage.h $(L2)/pagedir.h $(L1)/hashtable.h $(L1)/bag.h
 
 .PHONY: test valgrind clean
 
-# expects a file `test.names` to exist; it can contain any text.
+#testing command
 test: testing.sh
 	./testing.sh 
 
