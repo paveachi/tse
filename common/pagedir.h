@@ -32,3 +32,7 @@ bool pagedir_init(const char* pageDirectory);
  *  webpage is saved or nothing happens if there is an error.
  */
 void pagedir_save(const webpage_t* page, const char* pageDirectory, const int docID);
+
+bool pagedir_validate(char* pageDirectory);
+
+webpage_t* pagedir_load(char* pageDirectory, int docID);

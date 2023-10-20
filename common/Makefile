@@ -5,7 +5,7 @@
 
 L = ../libcs50
 # object files, and the target library
-OBJS = pagedir.o
+OBJS = pagedir.o index.o word.o
 LIB = common.a
 
 CFLAGS = -Wall -pedantic -std=c11 -ggdb -I$L
@@ -18,6 +18,8 @@ $(LIB): $(OBJS)
 
 # Dependencies: object files depend on header files
 pagedir.o: pagedir.h $L/webpage.h
+index.o: index.h $L/hashtable.h $L/counters.h $L/file.h
+word.o: word.h 
 
 .PHONY: clean sourcelist
 
