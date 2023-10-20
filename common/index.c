@@ -33,7 +33,11 @@ index_t* index_new(int size){
 
 bool index_add(index_t* index, char* word, int docID){
     //Try to insert word with new counter into hashtable. If already exists will do nothin.
-    hashtable_insert(index->hashtable, word, counters_new());
+    counters_t* newCounter = counters_new();
+
+    if(!hashtable_insert(index->hashtable, word, newCounter)){
+        free(newCounter);
+    }
     counters_t* counter = hashtable_find(index->hashtable, word);
     if(counters_add(counter, docID) > 0){
         return true;

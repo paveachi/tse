@@ -91,6 +91,7 @@ bool pagedir_validate(char* pageDirectory){
         return false;
     }
     free(pathName);
+    fclose(file);
     return true;
 }
 
@@ -119,8 +120,8 @@ webpage_t* pagedir_load(char* pageDirectory, int docID){
     
     webpage_t* page = webpage_new(url, depth, NULL);
 
+    fclose(file);
     free(pathName); //DO I FREE URL MYSELF?
-
     return page;
 
 }

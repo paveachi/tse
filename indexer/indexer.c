@@ -52,6 +52,7 @@ static void parseArgs(const int argc, char* argv[],  char** pageDirectory, char*
         exit(3);
     }
     *indexFilename = argv[2];
+    fclose(file);
 }
 
 void indexBuild(char* pageDirectory, char* indexFilename){
