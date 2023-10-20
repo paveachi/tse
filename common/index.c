@@ -47,7 +47,11 @@ bool index_add(index_t* index, char* word, int docID){
 
 bool index_set(index_t* index, char* word, int docID, int count){
     //Try to insert word with new counter into hashtable. If already exists will do nothin.
-    hashtable_insert(index->hashtable, word, counters_new());
+    counters_t* newCounter = counters_new();
+
+    if(!hashtable_insert(index->hashtable, word, newCounter)){
+        free(newCounter);
+    }
     counters_t* counter = hashtable_find(index->hashtable, word);
     if(counters_set(counter, docID, count)){
         return true;
@@ -101,14 +105,14 @@ index_t* index_load(char* pathName){
         //loop call fscanf
         int id;
         int count;
-        while(fscanf(file, "%d %d ",&id, &count)){ //Maybe fscanf needs to beFREE
+        while(fscanf(file, "%d %d ",&id, &count) == 2){ //Maybe fscanf needs to beFREE
             //add id, count to counters of 
             index_set(index, word, id, count);
         }
         free(word);
     }
     //FREE EVERYTHING NEEDED TO BE FREED.
-    
+    fclose(file);
     return index;
 }
 

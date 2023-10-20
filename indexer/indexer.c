@@ -21,14 +21,8 @@ int main(const int argc, char* argv[]){
 
     //parse command line, validate parameters   
     parseArgs(argc, argv, &pageDirectory, &indexFilename);
-    //initialize other modules. not quite sure what this means.
-    
-    //INITIALIZE INDEX HERE??
-
-    //call indexBuild with pageDirectory
     indexBuild(pageDirectory, indexFilename);
     
-    //SAVE AND DELETE INDEX HERE??
 }
 
 static void parseArgs(const int argc, char* argv[],  char** pageDirectory, char** indexFilename){

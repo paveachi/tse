@@ -1,12 +1,13 @@
 # Makefile for indexer 
 # Paul Chirkov
 
-#all: indexer indextest
+all: indexer indextest
 
 L1 = ../libcs50
 L2 = ../common
 
-OBJS = indexer.o
+OBJS1 = indexer.o
+OBJS2 = indextest.o
 LIBS = 
 LLIBS = $(L1)/libcs50-given.a $(L2)/common.a 
 
@@ -16,10 +17,13 @@ MAKE = make
 # for memory-leak tests
 VALGRIND = valgrind --leak-check=full --show-leak-kinds=all
 
-indexer: $(OBJS) $(LLIBS)
+indexer: $(OBJS1) $(LLIBS)
 	$(CC) $(CFLAGS) $^ $(LLIBS) $(LIBS) -o $@
-#crawler.o depends on a lot of h files.. pagedir webpage index word
 indexer.o: $(L1)/webpage.h $(L2)/pagedir.h $(L2)/index.h $(L2)/word.h  
+
+indextest: $(OBJS2) $(LLIBS) 
+	$(CC) $(CFLAGS) $^ $(LLIBS) $(LIBS) -o $@
+indextest.o: $(L2)/pagedir.h $(L2)/index.h 
 
 .PHONY: test valgrind clean
 
