@@ -1,0 +1,7 @@
+./testing.sh 
+usage: ./indexer pageDirectory indexFilename
+usage: ./indexer pageDirectory indexFilename
+usage: ./indexer pageDirectory indexFilename
+The given pageDirectory is not valid. It needs to be a directory with a .crawler file.
+The given pageDirectory is not valid. It needs to be a directory with a .crawler file.
+Not a valid path for the index file.

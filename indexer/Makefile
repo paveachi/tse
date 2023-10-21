@@ -28,11 +28,11 @@ indextest.o: $(L2)/pagedir.h $(L2)/index.h
 .PHONY: test valgrind clean
 
 #testing command
-#test: testing.sh
-#	./testing.sh 
+test: testing.sh
+	./testing.sh 
 
-#valgrind: testing.sh
-#	$(VALGRIND) ./testing.sh
+valgrind: testing.sh
+	$(VALGRIND) ./testing.sh
 
 clean:
 	rm -rf *.dSYM  # MacOS debugger info
