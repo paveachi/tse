@@ -11,7 +11,7 @@ Code: error
 # Assumptions... 
 
 No assumptions beyond those outlined in the specs. 
-Testing assumes crawer directories exist for letters, wikipedia and toscrape for depths 0 and 1. 
+Testing assumes crawer directories exist for letters, wikipedia and toscrape for depths 0 and 1. it also assumes there exists a `data` folder in the tse directory for the outputs of crawler and indexer.
 
 # Testing/known errors
 
