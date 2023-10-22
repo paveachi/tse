@@ -18,10 +18,10 @@
 #invalid page directory not crawler
 ./indexer ../data ../data/letters-0.index
 
-#invalid index file non existent
-./indexer ../data/letters-0 ../data/
+#invalid index file non existent path
+./indexer ../data/letters-0 ../yo/
 
-#testing indexer on
+#testing indexer on .crawler directories that exist (could also use shared examples)
 ./indexer ../data/letters-0 ../data/letters-0.index
 ./indexer ../data/letters-1 ../data/letters-1.index
 

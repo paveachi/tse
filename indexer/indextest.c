@@ -48,5 +48,6 @@ int main(const int argc, char* argv[]){
     //close files
     fclose(oldIndex);
     fclose(newIndex);
+    exit(0);
 }
 

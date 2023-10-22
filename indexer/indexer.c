@@ -30,6 +30,8 @@ int main(const int argc, char* argv[]){
     parseArgs(argc, argv, &pageDirectory, &indexFilename);
     //build the index
     indexBuild(pageDirectory, indexFilename);
+
+    exit(0);
 }
 
 /**************** parseArgs ****************/
@@ -79,31 +81,31 @@ static void parseArgs(const int argc, char* argv[],  char** pageDirectory, char*
 *   Trys to load each webpage from crawler directory, add all words to index.
 */
 void indexBuild(char* pageDirectory, char* indexFilename){
-    
-    //Creates new 'index' object, arbitrary size
-    index_t* index = index_new(600);
-    //loops over doc ID numbers, until undreadable file
-    for(int id=1; ;id++){
-        //loads webpage from document file 'pagedirectory/id'
-        webpage_t* webpage = pagedir_load(pageDirectory, id);
-        //if the page_dir is sucessful (file exists)
-        if(webpage != NULL){
-            //get the html and if sucessful
-            if(webpage_fetch(webpage)){
-                indexPage(webpage, id, index);
+    if(pageDirectory != NULL && indexFilename != NULL){
+        //Creates new 'index' object, arbitrary size
+        index_t* index = index_new(600);
+        //loops over doc ID numbers, until undreadable file
+        for(int id=1; ;id++){
+            //loads webpage from document file 'pagedirectory/id'
+            webpage_t* webpage = pagedir_load(pageDirectory, id);
+            //if the page_dir is sucessful (file exists)
+            if(webpage != NULL){
+                //get the html and if sucessful
+                if(webpage_fetch(webpage)){
+                    indexPage(webpage, id, index);
+                }
             }
-        }
-        else{
-            break;
-        }
-        //delete webpage
-        webpage_delete(webpage);
+            else{
+                break;
+            }
+            //delete webpage
+            webpage_delete(webpage);
     }
-
-    //save the index to a file
-    index_save(index, indexFilename);
-    //delete the index struct
-    index_delete(index);
+        //save the index to a file
+        index_save(index, indexFilename);
+        //delete the index struct
+        index_delete(index);
+    }
 }
 
 
@@ -116,22 +118,22 @@ void indexBuild(char* pageDirectory, char* indexFilename){
 *   Ignore words of length less than three, normalize word and add to index.
 */
 void indexPage(webpage_t* page, int docID, index_t* index){
+    if(!(page == NULL || docID <= 0 || index == NULL)){
+        //steps through each word on webpage
+        int pos = 0;
+        char* word;
+        while ((word = webpage_getNextWord(page, &pos)) != NULL) {
 
-    //steps through each word on webpage
-    int pos = 0;
-    char* word;
-    while ((word = webpage_getNextWord(page, &pos)) != NULL) {
-
-        //skips trivial words (less than len 3)
-        if(strlen(word) >= 3){
-            //normalizes word
-            word_normalize(word);
-            //add to word to index (increment or initialize to 1)
-            index_add(index, word, docID);
+            //skips trivial words (less than len 3)
+            if(strlen(word) >= 3){
+                //normalizes word
+                word_normalize(word);
+                //add to word to index (increment or initialize to 1)
+                index_add(index, word, docID);
+            }
+            free(word);
         }
-        free(word);
     }
-
 }
 
 
