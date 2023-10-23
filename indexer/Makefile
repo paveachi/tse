@@ -40,3 +40,4 @@ clean:
 	rm -f core
 	rm -f vgcore.*
 	rm -f ../data/*.index
+	rm -f indexer 
