@@ -4,7 +4,6 @@
  *
  * Paul Chirkov October 2023
  */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>

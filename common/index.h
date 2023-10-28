@@ -8,6 +8,7 @@
  */
 
 #include <stdio.h>
+#include <counters.h>
 
 /**************** global types ****************/
 typedef struct index index_t;
@@ -93,3 +94,6 @@ void index_save(index_t* index, char* pathName);
  *  later calling index_delete() on the index.
  */
 index_t* index_load(char* pathName);
+
+
+counters_t* index_getCounters(index_t* index, char* word);

@@ -1,13 +1,10 @@
 # Makefile for indexer 
 # Paul Chirkov
 
-all: indexer indextest
-
 L1 = ../libcs50
 L2 = ../common
 
-OBJS1 = indexer.o
-OBJS2 = indextest.o
+OBJS = querier.o
 LIBS = 
 LLIBS = $(L1)/libcs50-given.a $(L2)/common.a 
 
@@ -17,13 +14,9 @@ MAKE = make
 # for memory-leak tests
 VALGRIND = valgrind --leak-check=full --show-leak-kinds=all
 
-indexer: $(OBJS1) $(LLIBS)
+querier: $(OBJS) $(LLIBS)
 	$(CC) $(CFLAGS) $^ $(LLIBS) $(LIBS) -o $@
-indexer.o: $(L1)/webpage.h $(L2)/pagedir.h $(L2)/index.h $(L2)/word.h  
-
-indextest: $(OBJS2) $(LLIBS) 
-	$(CC) $(CFLAGS) $^ $(LLIBS) $(LIBS) -o $@
-indextest.o: $(L2)/pagedir.h $(L2)/index.h 
+querier.o: $(L1)/webpage.h $(L2)/pagedir.h $(L2)/index.h $(L2)/word.h $(L1)/counters.h $(L1)/file.h
 
 .PHONY: test valgrind clean
 
@@ -39,4 +32,4 @@ clean:
 	rm -f *~ *.o
 	rm -f core
 	rm -f vgcore.*
-	rm -f indexer 
+	rm -f querier 

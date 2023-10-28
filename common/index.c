@@ -143,6 +143,13 @@ index_t* index_load(char* pathName){
     return index;
 }
 
+/**************** index_getCounters ****************/
+/* see index.h for description */
+counters_t* index_getCounters(index_t* index, char* word){
+    counters_t* ctrs = hashtable_find(index->hashtable, word);
+    return ctrs;
+}
+
 
 //function for interating through counters
 void counterFunc(void* file, const char* key, void* counter){
