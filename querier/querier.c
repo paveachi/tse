@@ -36,15 +36,19 @@ struct max{
 int main(const int argc, char* argv[]){
     char* pageDirectory;
     char* indexFilename;
-
+    
     //call parseargs()
     parseArgs(argc, argv, &pageDirectory, &indexFilename);
     
     //READ ONE LINE AT A TIME DON't ADD NEWLINE TO CHARACTER
     
     while(!feof(stdin)){
+        printf("query?\n");
         char* query = file_readLine(stdin);
         //loop through query character by character when query[i] is a space, increment word count!
+        if(feof(stdin)){
+            exit(0);
+        }
         parseQuery(query, indexFilename);
         free(query);
     }
@@ -78,18 +82,7 @@ void parseArgs(const int argc, char* argv[], char** pageDirectory, char** indexF
     //extract into variable
 }
 
-//basically function to read from STDIN and call all the others.
-/*
-void query(){
 
-    while !EOF do all this shit
-
-        //read query from stdin?
-        // parse query
-        // call calc scores
-        //call scoreRank
-}
-*/
 
 //parse querry... get query, check exit non zero if invalid...
 // variable to keep track of previous conjuction (starts at true). 
@@ -97,23 +90,23 @@ void query(){
 // create array of words in query
 void parseQuery(char* query, char*indexFilename){
 
+    
     //read query from command line into a string. Each time you read call all this shit.
-
-    if(query == NULL){
-        fprintf(stderr, "error, must be a query");
+    
+    if(query == NULL || strlen(query) == 0){
+        fprintf(stderr, "error, there is no query.\n");
         exit(2);
     }
 
     //verify only contains letters and spaces
     for(int i=0; query[i]; i++){
         if(!(isalpha(query[i]) || isspace(query[i]))){
-            fprintf(stderr, "error, must only contain letters and spaces");
+            fprintf(stderr, "error, must only contain letters and spaces.\n");
             exit(2);
         }
     }
 
     int queryLen = numWords(query);
-    printf("%d The number of words in query.. \n", queryLen);
     char** wordArray = calloc(queryLen, sizeof(char*));
     tokenize(query, wordArray, queryLen);
     //char** wordArray = calloc(arrLength, sizeof(char*));
@@ -259,13 +252,11 @@ void calculateScores(char** query, char* indexPath, int queryLen){
     //need to add the last running prod back to sum no matter waht.
     countersUnion(runningSum, runningProd); 
 
-    
-
-    
+    /*
     printf("\nThis is the final return value for the counters: \n");
     counters_print(runningSum, stdout);
     printf("\n is it correct?");
-
+    */
     //call RANK SCORES
     //iterate through running sum, if count!= zero matches++. 
     int matches=0;
@@ -292,6 +283,7 @@ void countMatches(void* arg, const int key, const int count){
 void rankScores(counters_t* ctrs){
     //just needs to loop number of times or until zero is found...
     //initialize "max struct"...
+    // include STRING URL IN MAX STRUCT...
     if(ctrs != NULL){
     struct max maxCtr = {0,-1};
 
@@ -302,7 +294,7 @@ void rankScores(counters_t* ctrs){
         if(maxCtr.maxCount <= 0){
             break;
         }
-        //MAKE STRING FORMATTING NICE HERE.. PRINT
+        //MAKE STRING FORMATTING NICE HERE.. PRINT//TOGET URL I COULD LOAD WEBPAGE AND THEN DELETE IT,
         printf("Score: %d   doc  %d\n", maxCtr.maxCount, maxCtr.maxKey);
         counters_set(ctrs, maxCtr.maxKey, 0);
     }
