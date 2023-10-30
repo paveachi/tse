@@ -85,6 +85,7 @@ calculateScores
 
 
 rankScores
+
         declare a max struct 
         iterate through counter 
             initalize max struct
