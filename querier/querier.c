@@ -5,7 +5,6 @@
  * Paul Chirkov October 2023
  */
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -123,14 +122,14 @@ void parseQuery(char* query, char*indexFilename, char* pageDirectory){
     //check that there is in fact some query
     if(query == NULL || strlen(query) == 0){
         fprintf(stderr, "error, there is no query.\n");
-        exit(2);
+        exit(4);
     }
 
     //verify only contains letters and spaces
     for(int i=0; query[i]; i++){
         if(!(isalpha(query[i]) || isspace(query[i]))){
             fprintf(stderr, "error, must only contain letters and spaces.\n");
-            exit(2);
+            exit(5);
         }
     }
 
@@ -139,7 +138,7 @@ void parseQuery(char* query, char*indexFilename, char* pageDirectory){
     //allocate memory for the array of words in the query
     char** wordArray = calloc(queryLen, sizeof(char*));
     if(wordArray == NULL){
-        exit(5); // error allocatig memory
+        exit(6); // error allocatig memory
     }
     // creat the word array with tokenize
     tokenize(query, wordArray, queryLen);
@@ -181,13 +180,13 @@ void validateQueryStruct(char** wordArray, int queryLen){
     //check that the query doesn't start with 'and' or 'or'
     if((strcmp(wordArray[0], "or") ==0) || (strcmp(wordArray[0], "and")==0)){
         fprintf(stderr, "error, query cannot start with 'and' or 'or\n");
-        exit(3);
+        exit(7);
     }
 
     //check that the query doesn't end with 'and' or 'or'
     if((strcmp(wordArray[queryLen - 1], "or")==0) || (strcmp(wordArray[queryLen - 1], "and")==0)){
         fprintf(stderr, "error, query cannot end with 'and' or 'or\n");
-        exit(3);
+        exit(8);
     }
     
     //check no two operators are adjacent
@@ -196,7 +195,7 @@ void validateQueryStruct(char** wordArray, int queryLen){
         if((strcmp(wordArray[i], "or")==0 )|| (strcmp(wordArray[i], "and")==0)){
             if(prev){
                 fprintf(stderr, "error, two operators cannot be next to each other\n");
-                exit(4);
+                exit(9);
             }
             else{
                 prev = true;
