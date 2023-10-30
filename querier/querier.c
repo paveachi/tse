@@ -1,3 +1,11 @@
+/* querier.C 
+ * 
+ * A querier program written for CS50's TSE.
+ *
+ * Paul Chirkov October 2023
+ */
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -12,65 +20,83 @@
 #include <counters.h>
 #include <file.h>
 
+//Core querier functions
 void parseArgs(const int argc, char* argv[], char** pageDirectory, char** indexFilename);
-void parseQuery(/*maybe char query*/);
+void parseQuery(char* query, char*indexFilename, char* pageDirectory);
+void validateQueryStruct(char** wordArray, int queryLen);
 void tokenize(char* query, char** wordArray, int queryLen);
+void calculateScores(char** query, char* indexPath, int queryLen, char* pageDirectory);
+void rankScores(counters_t* ctrs, char* pageDirectory);
+
+//Functions for intersecting/unioning counters
 void countersUnion(counters_t* ctrs1, counters_t* ctrs2);
-void countersUnionHelper(void* ctrs1, const int key, const int count2);
 void countersIntersection(counters_t* ctrs1, counters_t* ctrs2);
+
+//Helper functions for various iterators
+void countersUnionHelper(void* ctrs1, const int key, const int count2);
 void countersSameKeys(void* ctrs2, const int key, const int count1);
 void countersIntersectionHelper(void* ctrs1, const int key, const int count1);
-void rankScores(counters_t* ctrs);
 void rankHelper(void* arg, const int key, const int count);
-void calculateScores(char** query, char* indexPath, int queryLen);
-int numWords(char* query);
 void countMatches(void* arg, const int key, const int count);
- 
-
+//local types, for finding max node in counter data struct.
 struct max{
         int maxKey;
         int maxCount;
 };
 
-//basic idea is that querier is broken up into three main functions
+
+
+/**************** main ****************/
 int main(const int argc, char* argv[]){
     char* pageDirectory;
     char* indexFilename;
     
-    //call parseargs()
+    //validate command line arguments
     parseArgs(argc, argv, &pageDirectory, &indexFilename);
     
-    //READ ONE LINE AT A TIME DON't ADD NEWLINE TO CHARACTER
-    
+    //Read line by line from stdin.     
     while(!feof(stdin)){
         printf("query?\n");
+        //read query 
         char* query = file_readLine(stdin);
-        //loop through query character by character when query[i] is a space, increment word count!
+        //if query is just EOF, exit 0.
         if(feof(stdin)){
             exit(0);
         }
-        parseQuery(query, indexFilename);
+        //query!
+        parseQuery(query, indexFilename, pageDirectory);
         free(query);
+        printf("--------------------------\n");
     }
-    // exit(0);
+    exit(0);
 }
 
-//parseArgs... same as others validate command line 
+/**************** parseArgs ****************/
+/* Handles command line arguments, makes sure they are all valid. 
+* 
+* Caller provides:
+*   num arguments, array of arguments, pointers to variables that should be updated by arguments
+* We guarantee: 
+*   If the function doesn't exit non-zero, the arguments are valid
+* We return:
+*   only return when succesful, otherwise exit non-zero
+*/
 void parseArgs(const int argc, char* argv[], char** pageDirectory, char** indexFilename){
-    //check that argv[1] is a crawler directory
-    //extract into variable
+    
+    //verifies there are 3 arguments
     if(argc != 3){
-        fprintf(stderr, "must have 3 arguments\n");
+        fprintf(stderr, "must have 3 arguments.\n");
         exit(1);
     }
 
+    //verifies the given directroy has a .crawler file in it.
     if(!pagedir_validate(argv[1])){
         fprintf(stderr, "The given pageDirectory is not valid. It needs to be a directory with a .crawler file.\n");
         exit(2);
     }
     *pageDirectory = argv[1];
 
-    // check that argv[2] is a file that can be read
+    // check that indexFilename is a valid path (readable file).
     FILE* file = fopen(argv[2], "r");
     if(file == NULL){
         fprintf(stderr, "Not a valid path for the index file.\n");
@@ -79,20 +105,22 @@ void parseArgs(const int argc, char* argv[], char** pageDirectory, char** indexF
 
     *indexFilename = argv[2];
     fclose(file);
-    //extract into variable
+    
 }
 
 
 
-//parse querry... get query, check exit non zero if invalid...
-// variable to keep track of previous conjuction (starts at true). 
-// bool prev conjuction. If second to last also true;
-// create array of words in query
-void parseQuery(char* query, char*indexFilename){
-
+/**************** parseQuery ****************/
+/* Validates query is valid with validateQueryStruct(). Creates the wordarray with tokenize(). Then calls calculateScores() on the given query.
+* 
+* Caller provides:
+*   the query, the indexFilename and the pageDirectory
+* We guarantee: 
+*   If the function doesn't exit non-zero the query is valid. 
+*/
+void parseQuery(char* query, char*indexFilename, char* pageDirectory){
     
-    //read query from command line into a string. Each time you read call all this shit.
-    
+    //check that there is in fact some query
     if(query == NULL || strlen(query) == 0){
         fprintf(stderr, "error, there is no query.\n");
         exit(2);
@@ -106,43 +134,63 @@ void parseQuery(char* query, char*indexFilename){
         }
     }
 
-    int queryLen = numWords(query);
+    //get the size of the query
+    int queryLen = word_numWords(query);
+    //allocate memory for the array of words in the query
     char** wordArray = calloc(queryLen, sizeof(char*));
+    if(wordArray == NULL){
+        exit(5); // error allocatig memory
+    }
+    // creat the word array with tokenize
     tokenize(query, wordArray, queryLen);
-    //char** wordArray = calloc(arrLength, sizeof(char*));
-    //FREED EVENTUALLY MUST BE!!!
-    
-    
+    //make sure the structure of the query is valid
+    validateQueryStruct(wordArray, queryLen);
+    //get the scores for the query, output them
+    calculateScores(wordArray, indexFilename, queryLen, pageDirectory);
+    //delete wordArray
+    free(wordArray);
+}
 
-    //print clean query AND make it all lower case IMPORTANT. Could Make this shit a function...
+
+/**************** validateQueryStruct() ****************/
+/* Validates query is valid. Normalizes all the words in the query.
+* 
+* Caller provides:
+*   the array of query words. The length of the array. 
+* We guarantee: 
+*   If the function doesn't exit non-zero the structure of the query is valid. 
+* Assumes:
+*   Query has already been checked for non space/alpha characters.
+*/
+void validateQueryStruct(char** wordArray, int queryLen){
+
+    //print clean query and normalize all of the words.
     printf( "The clean query: ");
     for(int i =0; i<queryLen; i++){
         if(wordArray[i] == NULL){
             break;
         }
         else{
+            //normalize each word in query.
             word_normalize(wordArray[i]);
             printf( "%s ", wordArray[i]);
         }
     }
     printf("\n");
 
-    
-    //I COULD MAKE THIS A SEPERATE FUNCTION RETURN TRUE/FALSE
-    //now validate structure of query... loop through array. 
-        //make sure doesn't start with operator
+    //check that the query doesn't start with 'and' or 'or'
     if((strcmp(wordArray[0], "or") ==0) || (strcmp(wordArray[0], "and")==0)){
         fprintf(stderr, "error, query cannot start with 'and' or 'or\n");
         exit(3);
     }
 
-    //THIS DOESN'T WORK
-    //doesn't end with operator
+    //check that the query doesn't end with 'and' or 'or'
     if((strcmp(wordArray[queryLen - 1], "or")==0) || (strcmp(wordArray[queryLen - 1], "and")==0)){
         fprintf(stderr, "error, query cannot end with 'and' or 'or\n");
         exit(3);
     }
-    //no operators are adjacent
+    
+    //check no two operators are adjacent
     bool prev = false;
     for(int i =0; i<queryLen; i++){
         if((strcmp(wordArray[i], "or")==0 )|| (strcmp(wordArray[i], "and")==0)){
@@ -158,20 +206,23 @@ void parseQuery(char* query, char*indexFilename){
             prev = false;
         }
     }
-    
-    //could call calcscores here... can free 
-    calculateScores(wordArray, indexFilename, queryLen);
-    free(wordArray);
 }
 
-//THIS SHIT IS NOT FUNCTIONING PROPERLY. WRITE FUNCTION (like words) to get num words in query... 
+
+/**************** tokenize() ****************/
+/* Create array of words from query
+* 
+* Caller provides:
+*   the array created array, the query and the length of the query (num words)
+* Assumes:
+*   Query has already been checked for non space/alpha characters.
+*/
 void tokenize(char* query, char** wordArray, int queryLen){
 
     char* word = query;
-
-    //I THINK PROBLEM IS NOT KNOWING WHEN TO STOP (MAXLEN). 
+    //loop for num words in query
     for(int i = 0; i < queryLen; i++){
-
+        //move to start of a word (past spaces)
         while((!isalpha(*word)) && (*word!='\0')){
             word++;
         }
@@ -179,16 +230,21 @@ void tokenize(char* query, char** wordArray, int queryLen){
             break;
         }
         if(isalpha(*word)){
+            //start word 
             wordArray[i] = word;
-            // word = char
-            // char* rest = strchr(word," ")
+            // find where word ends
             char* rest = strchr(word, ' ');
             if(rest == NULL){
+                //make sure newline character is not ending the word (for reading a file).
+                rest = strchr(word, '\n');
+                if(rest != NULL){
+                    *rest = '\0';
+                }
                 break;
             }
             // set rest to be a null terminator..
             *rest = '\0';
-            //move past null terminator.. SHOULD it be rest + 1?????
+            //move past null terminator.
             word = rest+1;
         }
         
@@ -196,129 +252,160 @@ void tokenize(char* query, char** wordArray, int queryLen){
 }
 
 
-//loop through query word array and calculate the scores. This is the beast algo
-//cereates 
-//return a counters_t object w/ the scores... feed counters_t object into sort scores. 
-//delete that shit.
-
-void calculateScores(char** query, char* indexPath, int queryLen){
-    //have to loadIndex from path...
+/**************** calculateScores ****************/
+/* Gets the counters data structure from the given index, calculates the score for the query.
+* 
+* Caller provides:
+*   the array of query words and its length. The path of the index file, pageDirectory.
+* Note:
+*   It calls rankScores() and therefore outputs the ranked queries.
+*/
+void calculateScores(char** query, char* indexPath, int queryLen, char* pageDirectory){
+    //load the index
     index_t* index = index_load(indexPath);
 
-    //prevWord = and.... initialize
+    //initialize first word to start runningProd.
     char* prev = "and";
-    //loop through the array of queries, calculate the scores
-    //initialize runningSum = 0 and runningProd = first counters. both empty counters?
-    //set first word counters to runningProd.. create new runningProd
-    //MUST BE FREEEEED!!!!!
+    //create new counter for the runningSum (outer loop)
     counters_t* runningSum = counters_new();
-    //set running prod to counter object of first word
+    //create variable for the andSequence(inner loop)
     counters_t* runningProd;
-    //loop through the array of queries, calculate the scores
+    //loop through the array of queries.
     for(int i =0; i < queryLen; i++){
         //if word is 'and'
         if(strcmp(query[i], "and") == 0){
             prev = query[i];
+            //set it to prev flag, move on
             continue;
         }
         if(strcmp(query[i], "or") == 0){
             prev = query[i];
             continue;
         }
-        //WHAT IF THIS IS NULL OR DOESN'T EXIT
+        //get the counter of the current word
         counters_t* current = index_getCounters(index, query[i]);
-        //IF CURRENT == NULL {continue??}
+        //for an 'or' sequence
         if(strcmp(prev, "or") == 0){
-            // RunningSum U runningProd
+            // RunningSum union runningProd.
             countersUnion(runningSum, runningProd);
             // set runningProd to new set at word
             runningProd = current; 
         }
+        //for an 'and' sequence
         else{
-            // take the intersetion of runingProd and set at WORD
+            // if this is the first word start the runningProd with it 
             if(i == 0){
                 runningProd = current;
             }
-            //take intersection of runningProd and set at word
+            //if the current isn't null intersect them.
             if(current!= NULL){
                 countersIntersection(runningProd, current);
             }
+            //otherwise set the RunningProd to null
             else{
                 runningProd = NULL;
             }
         }
+        //update previous flag
         prev = query[i];
     }
-    //need to add the last running prod back to sum no matter waht.
+    //Union the last Sum and Product.
     countersUnion(runningSum, runningProd); 
 
-    /*
-    printf("\nThis is the final return value for the counters: \n");
-    counters_print(runningSum, stdout);
-    printf("\n is it correct?");
-    */
-    //call RANK SCORES
-    //iterate through running sum, if count!= zero matches++. 
+    //print out the number of matches. 
     int matches=0;
     counters_iterate(runningSum, &matches, countMatches);
-    printf("Matches %d documents (ranked):\n", matches);
+    if(matches == 0){
+        printf("Matches %d documents.\n", matches);
+    }
+    else{
+        printf("Matches %d documents (ranked):\n", matches);
+    }
+    
+    //rank all the scores
+    rankScores(runningSum, pageDirectory);
 
-    rankScores(runningSum);
-
-    //delete INDEX, running prod, running sum
+    //delete INDEX, running prod
     index_delete(index);
     counters_delete(runningSum);
 }
 
-void countMatches(void* arg, const int key, const int count){
-    int* matches = arg;
-    if(count != 0){
-        (*matches)++;
-    }
-}
 
-//sortScores(counters_t)
-//take in counters object. Iterate and remove largest. set to zero. 
-//repeat until none left/
-void rankScores(counters_t* ctrs){
-    //just needs to loop number of times or until zero is found...
-    //initialize "max struct"...
-    // include STRING URL IN MAX STRUCT...
+
+/**************** rankScores() ****************/
+/* Ranks the documents in counter, prints them. 
+* 
+* Caller provides:
+*   The counters object to rank, the crawler pageDirectory. 
+* We do:
+*   Print all Docs with non-zero scores.
+*/
+void rankScores(counters_t* ctrs, char* pageDirectory){
+    // make sure ctrs is not null.
     if(ctrs != NULL){
-    struct max maxCtr = {0,-1};
+        struct max maxCtr = {0,-1};
 
-    while(maxCtr.maxCount != 0){
-        maxCtr.maxCount = -1;
-        maxCtr.maxKey = 0;
-        counters_iterate(ctrs, &maxCtr, rankHelper);
-        if(maxCtr.maxCount <= 0){
-            break;
+        while(maxCtr.maxCount != 0){
+            maxCtr.maxCount = -1;
+            maxCtr.maxKey = 0;
+            //iterate through set and remove largerest
+            counters_iterate(ctrs, &maxCtr, rankHelper);
+            if(maxCtr.maxCount <= 0){
+                break;
+            }
+            //if non-zero, get it's url and print it. 
+            webpage_t* temp = pagedir_load(pageDirectory, maxCtr.maxKey);
+            printf("Score: %d   doc:  %d   %s\n", maxCtr.maxCount, maxCtr.maxKey, webpage_getURL(temp));
+            webpage_delete(temp);
+            counters_set(ctrs, maxCtr.maxKey, 0);
         }
-        //MAKE STRING FORMATTING NICE HERE.. PRINT//TOGET URL I COULD LOAD WEBPAGE AND THEN DELETE IT,
-        printf("Score: %d   doc  %d\n", maxCtr.maxCount, maxCtr.maxKey);
-        counters_set(ctrs, maxCtr.maxKey, 0);
     }
-    }
-
-    //iterate through set and remove largerest
 }
 
+/**************** countersUnion() ****************/
+/* Sets the counts in ctrs1 to the sum of the counts in both ctrs1 and ctrs2
+* 
+* Caller provides:
+*   The counter to be updated, the counter to be added.
+* We do:
+*   Loop through and sum the scores of the counter.
+* Note: 
+*   if ctrs2 is null, nothing is done to ctrs1.
+*/
+void countersUnion(counters_t* ctrs1, counters_t* ctrs2){
+    counters_iterate(ctrs2, ctrs1, countersUnionHelper);
+}
+
+/**************** countersIntersection() ****************/
+/* Sets the counts in ctrs1 to the min of corresponding nodes in the two ctrs.
+* 
+* Caller provides:
+*   The counters to be updated, the counter to intersect it with.
+* We do:
+*   Ensure we don't miss something if the key in ctrs1 doesn't appear in ctrs2. 
+*/
+void countersIntersection(counters_t* ctrs1, counters_t* ctrs2){
+    // loop through the ctrs1 and ensure the keys are the same (set key to zero in ctrs2 if it doesn't exist).
+    counters_iterate(ctrs1, ctrs2, countersSameKeys);
+    // loop through and set the count to the min between the two.. 
+    counters_iterate(ctrs2, ctrs1, countersIntersectionHelper);
+}
+
+
+
+
+/*********Iterator helper functions **********/
+/******************************************************/
+//helper to get the largest node in the counter data structure.
 void rankHelper(void* arg, const int key, const int count){
     struct max* max = arg;
     if(count > max->maxCount){
         max->maxKey = key;
         max->maxCount = count;
     }
-
-}
-
-
-void countersUnion(counters_t* ctrs1, counters_t* ctrs2){
-    counters_iterate(ctrs2, ctrs1, countersUnionHelper);
 }
 
 // helper function, intersection of two countersets (and)
-
 void countersUnionHelper(void* ctrs1, const int key, const int count2){
     int count1;
     if((count1 = counters_get(ctrs1, key)) != 0){
@@ -329,22 +416,18 @@ void countersUnionHelper(void* ctrs1, const int key, const int count2){
     }
 }
 
-void countersIntersection(counters_t* ctrs1, counters_t* ctrs2){
-    // loop through the ctrs1 and check
-    counters_iterate(ctrs1, ctrs2, countersSameKeys);
-    //loop again and make sure if doesn't exist in second one set to zero. 
-    counters_iterate(ctrs2, ctrs1, countersIntersectionHelper);
-}
-
+//intersection helper function to ensure the counters have the same keys
 void countersSameKeys(void* ctrs2, const int key, const int count1){
-    //loop through 1 if key not in 2 set key to 0 in 2. This makes sure we don't miss any when intersecting the sets...
+    //loop through 1 if key not in 2 set key to 0 in 2. 
+    //This makes sure we don't miss any when intersecting the sets...
     if(counters_get(ctrs2, key) == 0){
         counters_set(ctrs2, key, 0);
     }
 }
 
+//intersection helper, does the actual intersecting.
 void countersIntersectionHelper(void* ctrs1, const int key, const int count1){
-    //loop through 2 and set count of each key in 1 to min between count, key.
+    //loop through a ctr and set count of each key in ctrs1 to min of the counts.
     int count2;
     if((count2 = counters_get(ctrs1, key)) != 0){
         if(count1 < count2){
@@ -354,20 +437,10 @@ void countersIntersectionHelper(void* ctrs1, const int key, const int count1){
 
 }
 
-int numWords(char* query){
-    bool prevSpace = 1;
-    int queryLen = 0;
-    for(int i = 0; i < strlen(query); i++){
-        if(isalpha(query[i]) && prevSpace){
-            queryLen++;
-            prevSpace = 0;
-        }
-        else if(isspace(query[i])){
-            prevSpace = 1;
-        }
+//helper to count number of matches.
+void countMatches(void* arg, const int key, const int count){
+    int* matches = arg;
+    if(count != 0){
+        (*matches)++;
     }
-    //if(isalpha(query[strlen(query) -1])){
-    //    queryLen++;
-   // }
-    return queryLen;
 }
