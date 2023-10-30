@@ -1,6 +1,8 @@
 # Makefile for indexer 
 # Paul Chirkov
 
+all: fuzzquery querier
+
 L1 = ../libcs50
 L2 = ../common
 
@@ -18,6 +20,10 @@ querier: $(OBJS) $(LLIBS)
 	$(CC) $(CFLAGS) $^ $(LLIBS) $(LIBS) -o $@
 querier.o: $(L1)/webpage.h $(L2)/pagedir.h $(L2)/index.h $(L2)/word.h $(L1)/counters.h $(L1)/file.h
 
+fuzzquery: fuzzquery.o $(LLIBS)
+	$(CC) $(CFLAGS) $^ $(LLIBS) $(LIBS) -o $@
+fuzzquery.o: $(L1)/file.h $(L1)/mem.h
+
 .PHONY: test valgrind clean
 
 #testing command
@@ -33,3 +39,5 @@ clean:
 	rm -f core
 	rm -f vgcore.*
 	rm -f querier 
+	rm -f fuzzquery 
+
