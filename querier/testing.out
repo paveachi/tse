@@ -1,0 +1,279 @@
+./testing.sh 
+Not a valid path for the index file.
+The given pageDirectory is not valid. It needs to be a directory with a .crawler file.
+must have 3 arguments.
+error, query cannot start with 'and' or 'or
+query?
+The clean query: and test 
+error, query cannot end with 'and' or 'or
+query?
+The clean query: test and 
+error, two operators cannot be next to each other
+query?
+The clean query: this or and test 
+error, must only contain letters and spaces.
+query?
+query?
+The clean query: test 
+Matches 5 documents (ranked):
+Score: 8   doc:  6   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/C_(programming_language).html
+Score: 4   doc:  2   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Linked_list.html
+Score: 2   doc:  3   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Hash_table.html
+Score: 1   doc:  5   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Unix.html
+Score: 1   doc:  7   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Computer_science.html
+--------------------------
+query?
+query?
+The clean query: cat and mouse 
+Matches 1 documents (ranked):
+Score: 1   doc:  5   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Unix.html
+--------------------------
+query?
+query?
+The clean query: cat mouse 
+Matches 1 documents (ranked):
+Score: 1   doc:  5   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Unix.html
+--------------------------
+query?
+query?
+The clean query: cat or mouse 
+Matches 1 documents (ranked):
+Score: 2   doc:  5   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Unix.html
+--------------------------
+query?
+cat: this: No such file or directory
+cat: AND: No such file or directory
+cat: teSt: No such file or directory
+cat: ANd: No such file or directory
+cat: car: No such file or directory
+cat: or: No such file or directory
+cat: MOUSE: No such file or directory
+query?
+./fuzzquery: generating 10 queries from 41 words
+query?
+The clean query: wikipedia and list 
+Matches 1 documents (ranked):
+Score: 1   doc:  1   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/
+--------------------------
+query?
+The clean query: linked or encyclopedia roche or list sites 
+Matches 1 documents (ranked):
+Score: 3   doc:  1   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/
+--------------------------
+query?
+The clean query: other language or local 
+Matches 1 documents (ranked):
+Score: 2   doc:  1   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/
+--------------------------
+query?
+The clean query: endlessly unix table or copy or curdled or httrack 
+Matches 1 documents (ranked):
+Score: 4   doc:  1   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/
+--------------------------
+query?
+The clean query: computer or open hash table and sites or available 
+Matches 1 documents (ranked):
+Score: 3   doc:  1   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/
+--------------------------
+query?
+The clean query: index middot college open or science 
+Matches 1 documents (ranked):
+Score: 2   doc:  1   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/
+--------------------------
+query?
+The clean query: sites 
+Matches 1 documents (ranked):
+Score: 1   doc:  1   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/
+--------------------------
+query?
+The clean query: the middot or index 
+Matches 1 documents (ranked):
+Score: 9   doc:  1   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/
+--------------------------
+query?
+The clean query: encyclopedia 
+Matches 1 documents (ranked):
+Score: 6   doc:  1   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/
+--------------------------
+query?
+The clean query: copy or encyclopedia or linked and httrack and table 
+Matches 1 documents (ranked):
+Score: 8   doc:  1   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/
+--------------------------
+query?
+./fuzzquery: generating 10 queries from 6506 words
+query?
+The clean query: courts and december 
+Matches 1 documents (ranked):
+Score: 1   doc:  4   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Dartmouth_College.html
+--------------------------
+query?
+The clean query: idea or thank reasonable or lord green 
+Matches 6 documents (ranked):
+Score: 6   doc:  3   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Hash_table.html
+Score: 3   doc:  4   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Dartmouth_College.html
+Score: 2   doc:  5   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Unix.html
+Score: 2   doc:  7   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Computer_science.html
+Score: 1   doc:  2   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Linked_list.html
+Score: 1   doc:  6   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/C_(programming_language).html
+--------------------------
+query?
+The clean query: typical gracefully or microprocessor 
+Matches 1 documents (ranked):
+Score: 2   doc:  3   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Hash_table.html
+--------------------------
+query?
+The clean query: endlessly howard url or photo or curdled or electric 
+Matches 2 documents (ranked):
+Score: 2   doc:  5   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Unix.html
+Score: 1   doc:  4   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Dartmouth_College.html
+--------------------------
+query?
+The clean query: clarification or android wordpress burton and enumerate or athletics 
+Matches 2 documents (ranked):
+Score: 11   doc:  4   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Dartmouth_College.html
+Score: 3   doc:  2   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Linked_list.html
+--------------------------
+query?
+The clean query: wilson daily opportunities naturally or speeding 
+Matches 1 documents (ranked):
+Score: 2   doc:  2   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Linked_list.html
+--------------------------
+query?
+The clean query: phenomenon 
+Matches 2 documents (ranked):
+Score: 1   doc:  5   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Unix.html
+Score: 1   doc:  6   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/C_(programming_language).html
+--------------------------
+query?
+The clean query: reinterpret depend or able 
+Matches 3 documents (ranked):
+Score: 2   doc:  3   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Hash_table.html
+Score: 2   doc:  5   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Unix.html
+Score: 1   doc:  2   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Linked_list.html
+--------------------------
+query?
+The clean query: distribute 
+Matches 2 documents (ranked):
+Score: 1   doc:  3   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Hash_table.html
+Score: 1   doc:  5   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Unix.html
+--------------------------
+query?
+The clean query: alorie or echo or overlooking and journal and expressed 
+Matches 6 documents (ranked):
+Score: 25   doc:  7   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Computer_science.html
+Score: 25   doc:  5   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Unix.html
+Score: 24   doc:  2   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Linked_list.html
+Score: 24   doc:  3   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Hash_table.html
+Score: 24   doc:  4   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/Dartmouth_College.html
+Score: 24   doc:  6   http://cs50tse.cs.dartmouth.edu/tse/wikipedia/C_(programming_language).html
+--------------------------
+query?
+./fuzzquery: generating 10 queries from 134 words
+query?
+The clean query: scrape and search 
+Matches 1 documents (ranked):
+Score: 1   doc:  1   http://cs50tse.cs.dartmouth.edu/tse/toscrape/
+--------------------------
+query?
+The clean query: document or document erotica or adult here 
+Matches 1 documents (ranked):
+Score: 3   doc:  1   http://cs50tse.cs.dartmouth.edu/tse/toscrape/
+--------------------------
+query?
+The clean query: function humor or have 
+Matches 1 documents (ranked):
+Score: 2   doc:  1   http://cs50tse.cs.dartmouth.edu/tse/toscrape/
+--------------------------
+query?
+The clean query: endlessly games sandbox or music or curdled or food 
+Matches 1 documents (ranked):
+Score: 2   doc:  1   http://cs50tse.cs.dartmouth.edu/tse/toscrape/
+--------------------------
+query?
+The clean query: scrape or results assigned comment and objects or demo 
+Matches 1 documents (ranked):
+Score: 4   doc:  1   http://cs50tse.cs.dartmouth.edu/tse/toscrape/
+--------------------------
+query?
+The clean query: olio health travel results or all 
+Matches 1 documents (ranked):
+Score: 4   doc:  1   http://cs50tse.cs.dartmouth.edu/tse/toscrape/
+--------------------------
+query?
+The clean query: assigned 
+Matches 1 documents (ranked):
+Score: 1   doc:  1   http://cs50tse.cs.dartmouth.edu/tse/toscrape/
+--------------------------
+query?
+The clean query: scraped our or secrets 
+Matches 1 documents (ranked):
+Score: 2   doc:  1   http://cs50tse.cs.dartmouth.edu/tse/toscrape/
+--------------------------
+query?
+The clean query: beginners 
+Matches 1 documents (ranked):
+Score: 1   doc:  1   http://cs50tse.cs.dartmouth.edu/tse/toscrape/
+--------------------------
+query?
+The clean query: thriller or mystery or religion and free and books 
+Matches 1 documents (ranked):
+Score: 3   doc:  1   http://cs50tse.cs.dartmouth.edu/tse/toscrape/
+--------------------------
+query?
+./fuzzquery: generating 10 queries from 2326 words
+query?
+The clean query: kept and dialogue 
+Matches 0 documents.
+--------------------------
+query?
+The clean query: sans or profiled exhibited or doors washington 
+Matches 1 documents (ranked):
+Score: 4   doc:  20   http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/soumission_998/index.html
+--------------------------
+query?
+The clean query: setbacks turned or hong 
+Matches 1 documents (ranked):
+Score: 1   doc:  68   http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/classics_6/index.html
+--------------------------
+query?
+The clean query: endlessly hook society or far or curdled or robotic 
+Matches 2 documents (ranked):
+Score: 1   doc:  37   http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/category/books/thriller_37/index.html
+Score: 1   doc:  5   http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/mesaerion-the-best-science-fiction-stories-1800-1849_983/index.html
+--------------------------
+query?
+The clean query: wrought or cookbook golden sensibility and unbroken or entertaining 
+Matches 2 documents (ranked):
+Score: 1   doc:  5   http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/mesaerion-the-best-science-fiction-stories-1800-1849_983/index.html
+Score: 1   doc:  3   http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/its-only-the-himalayas_981/index.html
+--------------------------
+query?
+The clean query: prince insightful clandestine floatlike or mouths 
+Matches 1 documents (ranked):
+Score: 1   doc:  6   http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/olio_984/index.html
+--------------------------
+query?
+The clean query: magazine 
+Matches 2 documents (ranked):
+Score: 2   doc:  13   http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-black-maria_991/index.html
+Score: 1   doc:  5   http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/mesaerion-the-best-science-fiction-stories-1800-1849_983/index.html
+--------------------------
+query?
+The clean query: animalia sharp or messages 
+Matches 2 documents (ranked):
+Score: 2   doc:  17   http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-requiem-red_995/index.html
+Score: 1   doc:  13   http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-black-maria_991/index.html
+--------------------------
+query?
+The clean query: club 
+Matches 1 documents (ranked):
+Score: 2   doc:  15   http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-coming-woman-a-novel-based-on-the-life-of-the-infamous-feminist-victoria-woodhull_993/index.html
+--------------------------
+query?
+The clean query: stations or market or national and irreverent and traveling 
+Matches 2 documents (ranked):
+Score: 2   doc:  7   http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/our-band-could-be-your-life-scenes-from-the-american-indie-underground-1981-1991_985/index.html
+Score: 2   doc:  16   http://cs50tse.cs.dartmouth.edu/tse/toscrape/catalogue/the-dirty-little-secrets-of-getting-your-dream-job_994/index.html
+--------------------------
+query?
