@@ -109,4 +109,6 @@ countersIntersection
 
 - I chose to implement a function in word.c to count the number of words in a string so that I could then tokenize the query efficiently. This works well since it means the exact correct amount of memory is allcated for the array of words in the query, and makes it simple to step through the query. I also implemented another function in index.c to get the counters item for a given word. This allowed me to retrieve the counter for a word and then union/intersect it accordingly.
 
+## Retrieving max of counter
+
 - Retrieving the max node in a counter required keeping track of both the key and the count, and therefore I created a max struct to hold precisely those two things.
