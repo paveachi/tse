@@ -95,5 +95,13 @@ void index_save(index_t* index, char* pathName);
  */
 index_t* index_load(char* pathName);
 
-
+/**************** index_get ****************/
+/* Get counter for word in index.
+ * 
+ * Caller provides:
+ *   valid pointer to index, a key (the word).
+ * We return:
+ *  The counters object.
+ *  Null if there is some error otherwise.
+ */
 counters_t* index_getCounters(index_t* index, char* word);
