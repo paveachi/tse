@@ -21,8 +21,8 @@
 
 //Core querier functions
 void parseArgs(const int argc, char* argv[], char** pageDirectory, char** indexFilename);
-void parseQuery(char* query, char*indexFilename, char* pageDirectory);
-void validateQueryStruct(char** wordArray, int queryLen);
+bool parseQuery(char* query, char*indexFilename, char* pageDirectory);
+bool validateQueryStruct(char** wordArray, int queryLen);
 void tokenize(char* query, char** wordArray, int queryLen);
 void calculateScores(char** query, char* indexPath, int queryLen, char* pageDirectory);
 void rankScores(counters_t* ctrs, char* pageDirectory);
@@ -63,7 +63,9 @@ int main(const int argc, char* argv[]){
             exit(0);
         }
         //query!
-        parseQuery(query, indexFilename, pageDirectory);
+        if(!parseQuery(query, indexFilename, pageDirectory)){
+            continue;
+        }
         free(query);
         printf("--------------------------\n");
     }
@@ -117,19 +119,19 @@ void parseArgs(const int argc, char* argv[], char** pageDirectory, char** indexF
 * We guarantee: 
 *   If the function doesn't exit non-zero the query is valid. 
 */
-void parseQuery(char* query, char*indexFilename, char* pageDirectory){
+bool parseQuery(char* query, char*indexFilename, char* pageDirectory){
     
     //check that there is in fact some query
     if(query == NULL || strlen(query) == 0){
         fprintf(stderr, "error, there is no query.\n");
-        exit(4);
+        return false;
     }
 
     //verify only contains letters and spaces
     for(int i=0; query[i]; i++){
         if(!(isalpha(query[i]) || isspace(query[i]))){
             fprintf(stderr, "error, must only contain letters and spaces.\n");
-            exit(5);
+            return false;
         }
     }
 
@@ -143,11 +145,14 @@ void parseQuery(char* query, char*indexFilename, char* pageDirectory){
     // creat the word array with tokenize
     tokenize(query, wordArray, queryLen);
     //make sure the structure of the query is valid
-    validateQueryStruct(wordArray, queryLen);
+    if(!validateQueryStruct(wordArray, queryLen)){
+        return false;
+    }
     //get the scores for the query, output them
     calculateScores(wordArray, indexFilename, queryLen, pageDirectory);
     //delete wordArray
     free(wordArray);
+    return true;
 }
 
 
@@ -161,7 +166,7 @@ void parseQuery(char* query, char*indexFilename, char* pageDirectory){
 * Assumes:
 *   Query has already been checked for non space/alpha characters.
 */
-void validateQueryStruct(char** wordArray, int queryLen){
+bool validateQueryStruct(char** wordArray, int queryLen){
 
     //print clean query and normalize all of the words.
     printf( "The clean query: ");
@@ -180,13 +185,13 @@ void validateQueryStruct(char** wordArray, int queryLen){
     //check that the query doesn't start with 'and' or 'or'
     if((strcmp(wordArray[0], "or") ==0) || (strcmp(wordArray[0], "and")==0)){
         fprintf(stderr, "error, query cannot start with 'and' or 'or\n");
-        exit(7);
+        return false;
     }
 
     //check that the query doesn't end with 'and' or 'or'
     if((strcmp(wordArray[queryLen - 1], "or")==0) || (strcmp(wordArray[queryLen - 1], "and")==0)){
         fprintf(stderr, "error, query cannot end with 'and' or 'or\n");
-        exit(8);
+        return false;
     }
     
     //check no two operators are adjacent
@@ -195,7 +200,7 @@ void validateQueryStruct(char** wordArray, int queryLen){
         if((strcmp(wordArray[i], "or")==0 )|| (strcmp(wordArray[i], "and")==0)){
             if(prev){
                 fprintf(stderr, "error, two operators cannot be next to each other\n");
-                exit(9);
+                return false;
             }
             else{
                 prev = true;
@@ -205,6 +210,7 @@ void validateQueryStruct(char** wordArray, int queryLen){
             prev = false;
         }
     }
+    return true;
 }
 
 

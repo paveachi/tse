@@ -1,3 +1,10 @@
+****************
+EXTENSION USED - Paul Chirkov**
+***************
+
+
+
+
 # EXIT CODES
 
 Code: error
@@ -5,12 +12,8 @@ Code: error
 1: invalid number of arguments
 2: invalid pageDirectory
 3: invalid indexFile
-4: empty query
-5: query contains invalid character
 6: error allocating memory for word array
-7: query cannot start with operator
-8: query cannot end with operator
-9: query cannot have two adjacent operators
+
 
 # Assumptions 
 
